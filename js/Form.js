@@ -14,7 +14,23 @@ class Form {
     this.input.hide();
     this.title.hide();
   }
+  enter() {
+    this.title.hide();
+    this.input.hide();
+    this.button.hide();
 
+    player.name = this.input.value();
+    playerCount++;
+    player.index = playerCount;
+    player.updateName();
+    player.updateCount(playerCount);
+
+    this.greeting.html("Welcome " + player.name + "!");
+    this.greeting.position(
+      displayWidth / 2.1 - player.name.length * (displayWidth / 110),
+      125
+    );
+  }
   display(){
     this.title.html("Car Racing Game");
     this.title.position(displayWidth/2 - 50, 0);

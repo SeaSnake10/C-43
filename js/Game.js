@@ -30,29 +30,24 @@ class Game {
             }
         
             car1 = createSprite(100,200);
-            car1.debug="true";
             car1.addImage("car1",car1_img);
             car2 = createSprite(300,200);
-            car2.debug="true";
-
             car2.addImage("car2",car2_img);
             car3 = createSprite(500,200);
-            car3.debug="true";
-
             car3.addImage("car3",car3_img);
             car4 = createSprite(700,200);
-            car4.debug="true";
             car4.addImage("car4",car4_img);
-
             cars = [car1, car2, car3, car4];
-            pf = false;
+            passedFinish = false;
+
           }
         
           play(){
             form.hide();
         
             Player.getPlayerInfo();
-            
+            player.getFinishedPlayers();
+
             if(allPlayers !== undefined){
               //var display_position = 100;
               image(track, 0,-displayHeight*4,displayWidth, displayHeight*5);
@@ -82,20 +77,18 @@ class Game {
                   cars[index - 1].shapeColor = "red";
                   camera.position.x = displayWidth/2;
                   camera.position.y = cars[index-1].y
-                  if( cars[index - 1].isTouching(obstacles)){
+                           if( cars[index - 1].isTouching(obstacles)){
                                                 s.play();
 
-                    yVel -= 0.9;
-
-                  }
+                    yVel -= 0.9;}
                 }
                
               }
         
             }
-        
-            
-            if(player.distance < 2150){
+        console.log(displayHeight)
+        console.log(  player.distance  )
+            if(player.distance < 3700){
               if(keyIsDown(38) && player.index !== null){
                   yVel += 0.9;
                   if(keyIsDown(37)){
@@ -111,15 +104,19 @@ class Game {
                   yVel *= 0.985;
                   xVel *= 0.985;
               }
-            }
-            else if (pf === false){
-              yVel*=0.7;
-              xVel*=0.7;
+            }else if(passedFinish === false){
+              yVel *= 0.7;
+              xVel *= 0.7;
               Player.updateFinishedPlayers();
               player.place = finishedPlayers;
+  
               player.update();
-              pf = true;
-            }
+              passedFinish = true;
+          }else{
+              yVel *= 0.8;
+              xVel *= 0.8;
+          }
+  
         
           //move the car
           player.distance += yVel;
@@ -132,4 +129,32 @@ class Game {
         }
            
       
-        }
+        displayRanks(){
+          //display the medals
+          camera.position.y = 0;
+          camera.position.x = 0;
+  
+          imageMode(CENTER);
+  
+          Player.getPlayerInfo();
+  
+          image(bronze_img, displayWidth/-5, -100 + displayHeight/9, 200, 240);
+          image(silver_img, displayWidth/5, -100 + displayHeight/10, 225, 270);
+          image(gold_img, 0, -100, 250, 300);
+  
+          textAlign(CENTER);
+          textSize(50);
+          for(var plr in allPlayers){
+              if(allPlayers[plr].place === 1){
+                  text("1st: " + allPlayers[plr].name, 0, 85);
+              }else if(allPlayers[plr].place === 2){
+                  text("2nd: " + allPlayers[plr].name, displayWidth/5, displayHeight/9 + 73);
+              }else if(allPlayers[plr].place === 3){
+                  text("3rd: " + allPlayers[plr].name, displayWidth/-5, displayHeight/10 + 76);
+              }else{
+                  textSize(30);
+                  text("Honorable Mention: " + allPlayers[plr].name, 0, 225);
+              }
+          }
+      }
+  }
